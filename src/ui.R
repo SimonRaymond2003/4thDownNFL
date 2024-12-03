@@ -69,7 +69,7 @@ ui <- navbarPage(
                  style = "position: absolute; right: 10px; top: 5px; font-size: 28px; font-weight: bold; cursor: pointer;"
                ),
                h3("About Player Statistics", style = "margin-top: 10px;"),
-               p("This tab allows you to explore detailed player statistics from the PFF database. 
+               p("This tab allows you to explore player statistics. This data has been engineered from PFF player reports.
         You can view both individual week performance and aggregated statistics over selected time periods."),
                h4("Features:"),
                tags$ul(
@@ -257,6 +257,49 @@ ui <- navbarPage(
                  )
                )
              )
+             # Close the Fourth Down Decisions tabPanel
            )
-  )
-)
+  ),
+  
+  # About tab 5
+  tabPanel("About",
+           fluidPage(
+             fluidRow(
+               column(8, offset = 2,
+                      div(
+                        style = "background-color: white; padding: 20px; border-radius: 5px; box-shadow: 0 2px 4px rgba(0,0,0,0.1); margin-top: 20px;",
+                        h2("About the Developer", style = "border-bottom: 2px solid #f0f0f0; padding-bottom: 10px;"),
+                        p("My name is Simon Raymond. Im a fourth-year honours economics student at Saint Mary's University with a focus on econometrics, sports analytics and data science."),
+                        
+                        h3("Academic Experience", style = "margin-top: 20px;"),
+                        tags$ul(
+                          tags$li("Research Assistant working on projects relating to housing, crime and with the 2021 census"),
+                          tags$li("Teaching Assistant for Machine Learning, Econometrics and Human Resource Economics courses"),
+                          tags$li("Teaching labs for Machine Learning and Econometrics courses"),
+                          tags$li("Currently I am applying to graduate programs in economics. My goal to to finish a PHD and pursue a career as a assistant proffessor.")
+                        ),
+                        
+                        h3("Related Projects", style = "margin-top: 20px;"),
+                        div(
+                          style = "display: flex; gap: 20px; margin-top: 15px;",
+                          div(
+                            style = "flex: 1; padding: 15px; border: 1px solid #ddd; border-radius: 5px;",
+                            h4("Project 1"),
+                            p("Description of first project"),
+                            tags$a(href = "[First App Link]", "Visit App", target = "_blank", 
+                                   style = "color: #2196F3; text-decoration: none;")
+                          ),
+                          div(
+                            style = "flex: 1; padding: 15px; border: 1px solid #ddd; border-radius: 5px;",
+                            h4("Project 2"),
+                            p("Description of second project"),
+                            tags$a(href = "[Second App Link]", "Visit App", target = "_blank", 
+                                   style = "color: #2196F3; text-decoration: none;")
+                          )
+                        )
+                      )
+               )
+             )
+           )
+  ) # Close About tabPanel
+) # Close navbarPage

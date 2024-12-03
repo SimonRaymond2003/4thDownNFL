@@ -114,6 +114,7 @@ server <- function(input, output, session) {
     
     DT::datatable(
       t(agg_stats),
+      colnames = rep("", ncol(t(agg_stats))), # This removes the V1 header
       options = list(
         scrollX = TRUE,
         pageLength = 50,

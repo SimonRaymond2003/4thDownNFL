@@ -56,8 +56,22 @@ ui <- navbarPage(
   ),
   # tab 2
   
-  # UI Tab replacement:
+  # Tab 2: Player Statistics
   tabPanel("Player Statistics",
+           # Data display notice
+           div(
+             style = "background-color: #f8f9fa; border-left: 5px solid #007bff; padding: 15px; margin: 15px 0; border-radius: 4px;",
+             h4("Important Notice About Data Display", style = "color: #007bff; margin-top: 0;"),
+             p("While I have personally created and engineered this dataset from PFF player reports for my research and analysis, I am currently awaiting confirmation regarding public display permissions. Until this is confirmed, numerical values will be displayed as '###' except for:"),
+             tags$ul(
+               tags$li("Player ID"),
+               tags$li("Year"),
+               tags$li("Week")
+             ),
+             p("The complete dataset with all numerical values is available for my personal analytical use. This masking is temporary while permissions are finalized.")
+           ),
+           
+           # Information Modal
            div(
              id = "info_modal",
              style = "display: none; position: fixed; z-index: 1000; left: 0; top: 0; width: 100%; height: 100%; overflow: auto; background-color: rgba(0,0,0,0.4);",
@@ -70,7 +84,7 @@ ui <- navbarPage(
                ),
                h3("About Player Statistics", style = "margin-top: 10px;"),
                p("This tab allows you to explore player statistics. This data has been engineered from PFF player reports.
-        You can view both individual week performance and aggregated statistics over selected time periods."),
+               You can view both individual week performance and aggregated statistics over selected time periods."),
                h4("Features:"),
                tags$ul(
                  tags$li("Select specific weeks and years to analyze player performance"),
@@ -81,7 +95,10 @@ ui <- navbarPage(
                )
              )
            ),
+           
+           # Main Content
            fluidRow(
+             # Left Sidebar
              column(3,
                     wellPanel(
                       actionButton("show_info", "Show Information", class = "btn-info"),
@@ -108,19 +125,26 @@ ui <- navbarPage(
                                   step = 1)
                     )
              ),
+             
+             # Main Panel
              column(9,
+                    # Position Summary
                     div(
                       style = "background-color: #f8f9fa; padding: 15px; margin-bottom: 20px; border-radius: 5px;",
                       h4("Position Summary", style = "margin-top: 0;"),
                       verbatimTextOutput("position_summary")
                     ),
+                    
+                    # Statistics Tabs
                     tabsetPanel(id = "stats_tabs",
+                                # Weekly Stats Tab
                                 tabPanel("Weekly Stats",
                                          div(
                                            style = "overflow-x: auto;",
                                            DT::dataTableOutput("weekly_stats")
                                          )
                                 ),
+                                # Aggregated Stats Tab
                                 tabPanel("Aggregated Stats",
                                          div(
                                            style = "overflow-x: auto; width: 100%;",

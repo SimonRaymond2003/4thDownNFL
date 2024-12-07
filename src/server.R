@@ -1,26 +1,124 @@
 # server.R
 
-
-# Define server
 server <- function(input, output, session) {
+  # Formation Viewer Tab Logic
+  observe({
+    years <- sort(unique(data_all$season))
+    updateSelectInput(session, "year",
+                      choices = years,
+                      selected = max(years))
+  })
   
+  observe({
+    req(input$year)
+    weeks <- sort(unique(data_all$week[data_all$season == input$year]))
+    updateSelectInput(session, "week",
+                      choices = weeks,
+                      selected = min(weeks))
+  })
   
-  # player stats add #########################3
-  # In the position_data reactive within the server function, update to:
-  # Server code between hashtags:
+  observe({
+    req(input$year, input$week)
+    games_data <- data_all %>%
+      filter(season == input$year,
+             week == input$week) %>%
+      select(game_id, home_team, away_team) %>%
+      distinct() %>%
+      mutate(
+        game_label = sprintf("%s @ %s", away_team, home_team),
+        game_id = as.character(game_id)
+      )
+    
+    updateSelectInput(session, "game",
+                      choices = setNames(games_data$game_id, games_data$game_label))
+  })
   
+  observe({
+    req(input$game)
+    plays <- data_all %>%
+      filter(game_id == input$game) %>%
+      mutate(play_desc = sprintf("Q%d - %d:%02d - %s - %d to go",
+                                 qtr,
+                                 floor(game_seconds_remaining/60),
+                                 game_seconds_remaining %% 60,
+                                 offense_formation,
+                                 ydstogo))
+    
+    updateSelectInput(session, "play",
+                      choices = setNames(1:nrow(plays), plays$play_desc))
+  })
+  
+  selected_play <- reactive({
+    req(input$play, input$game)
+    data_all %>%
+      filter(game_id == input$game) %>%
+      slice(as.numeric(input$play))
+  })
+  
+  output$formation_plot <- renderPlot({
+    req(selected_play())
+    tryCatch({
+      plot_formation(selected_play())
+    }, error = function(e) {
+      plot(0:1, 0:1, type = "n", axes = FALSE, xlab = "", ylab = "")
+      text(0.5, 0.5, "Error creating formation plot\nPlease check data and selections", 
+           cex = 1.5, col = "red", adj = 0.5)
+    })
+  })
+  
+  output$play_desc <- renderUI({
+    req(selected_play())
+    play <- selected_play()
+    HTML(sprintf("<div style='background-color: #f8f9fa; padding: 10px; margin: 10px 0;'>
+                   <strong>Play Description:</strong> %s
+                 </div>", 
+                 play$desc))
+  })
+  
+  output$play_details <- renderText({
+    req(selected_play())
+    play <- selected_play()
+    sprintf("Season: %d\nQuarter: %d\nTime: %d:%02d\nYard line: %d\nTo go: %d\nFormation: %s\nDefense: %s",
+            play$season,
+            play$qtr,
+            floor(play$game_seconds_remaining/60),
+            play$game_seconds_remaining %% 60,
+            play$yardline_100,
+            play$ydstogo,
+            play$offense_formation,
+            play$defense_personnel)
+  })
+  
+  output$offense_table <- DT::renderDataTable({
+    req(selected_play())
+    DT::datatable(
+      create_player_table(selected_play(), "offense"),
+      options = list(
+        pageLength = 11,
+        dom = 't',
+        ordering = FALSE
+      ),
+      rownames = FALSE
+    )
+  })
+  
+  output$defense_table <- DT::renderDataTable({
+    req(selected_play())
+    DT::datatable(
+      create_player_table(selected_play(), "defense"),
+      options = list(
+        pageLength = 11,
+        dom = 't',
+        ordering = FALSE
+      ),
+      rownames = FALSE
+    )
+  })
+  
+  # Player Statistics Tab Logic
   position_data <- reactive({
     req(input$player_position)
     if(input$player_position == "") return(NULL)
-    
-    pff_stats_no_grades %>%
-      filter(position == input$player_position) %>%
-      arrange(year, week)
-  })
-  
-  # Initialize position data
-  position_data <- reactive({
-    req(input$player_position)
     switch(input$player_position,
            "K" = pff_k,
            "QB" = pff_qb,
@@ -37,10 +135,12 @@ server <- function(input, output, session) {
            "HB" = pff_hb,
            "G" = pff_g,
            "C" = pff_c,
-           "FB" = pff_fb)
+           "FB" = pff_fb,
+           pff_stats_no_grades %>%
+             filter(position == input$player_position) %>%
+             arrange(year, week))
   })
   
-  # Update team choices
   observe({
     req(position_data())
     teams <- unique(position_data()$team_name)
@@ -48,7 +148,6 @@ server <- function(input, output, session) {
                       choices = c("Select Team" = "", sort(teams)))
   })
   
-  # Update player choices
   observe({
     req(input$player_team, position_data())
     players <- position_data() %>%
@@ -59,12 +158,10 @@ server <- function(input, output, session) {
                       choices = c("Select Player" = "", sort(players)))
   })
   
-  # Show modal
   observeEvent(input$show_info, {
     shinyjs::runjs("$('#info_modal').show();")
   })
   
-  # Position summary output
   output$position_summary <- renderText({
     req(position_data())
     summary <- get_position_summary(position_data())
@@ -73,8 +170,6 @@ server <- function(input, output, session) {
             summary$categorical_cols, summary$na_percentage)
   })
   
-  # Weekly stats table
-  # Update the weekly_stats and aggregated_stats outputs:
   output$weekly_stats <- DT::renderDataTable({
     req(input$player_position, input$player_team, input$player_name)
     
@@ -87,7 +182,6 @@ server <- function(input, output, session) {
         week <= input$week_range[2]
       ) %>%
       select_if(~!all(is.na(.))) %>%
-      # Only mask numeric columns except for player_id, year, and week
       mutate(across(where(is.numeric), 
                     ~if(!(cur_column() %in% c("player_id", "year", "week"))) {
                       ifelse(!is.na(.), "###", NA)
@@ -117,9 +211,6 @@ server <- function(input, output, session) {
         week <= input$week_range[2]
       )
     
-    # Calculate averages but replace numeric values with ###
-    # Note: player_id, year, and week won't appear in aggregated stats
-    # since they're not meant to be averaged
     agg_stats <- calculate_player_averages(player_stats) %>%
       mutate_if(is.numeric, ~ifelse(!is.na(.), "###", NA))
     

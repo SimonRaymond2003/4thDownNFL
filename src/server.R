@@ -74,7 +74,7 @@ server <- function(input, output, session) {
   })
   
   # Weekly stats table
-  # Server modification - Update the weekly_stats and aggregated_stats outputs:
+  # Update the weekly_stats and aggregated_stats outputs:
   output$weekly_stats <- DT::renderDataTable({
     req(input$player_position, input$player_team, input$player_name)
     
@@ -86,7 +86,14 @@ server <- function(input, output, session) {
         week >= input$week_range[1],
         week <= input$week_range[2]
       ) %>%
-      select_if(~!all(is.na(.)))
+      select_if(~!all(is.na(.))) %>%
+      # Only mask numeric columns except for player_id, year, and week
+      mutate(across(where(is.numeric), 
+                    ~if(!(cur_column() %in% c("player_id", "year", "week"))) {
+                      ifelse(!is.na(.), "###", NA)
+                    } else {
+                      .
+                    }))
     
     DT::datatable(
       player_stats,
@@ -110,11 +117,15 @@ server <- function(input, output, session) {
         week <= input$week_range[2]
       )
     
-    agg_stats <- calculate_player_averages(player_stats)
+    # Calculate averages but replace numeric values with ###
+    # Note: player_id, year, and week won't appear in aggregated stats
+    # since they're not meant to be averaged
+    agg_stats <- calculate_player_averages(player_stats) %>%
+      mutate_if(is.numeric, ~ifelse(!is.na(.), "###", NA))
     
     DT::datatable(
       t(agg_stats),
-      colnames = rep("", ncol(t(agg_stats))), # This removes the V1 header
+      colnames = rep("", ncol(t(agg_stats))),
       options = list(
         scrollX = TRUE,
         pageLength = 50,
@@ -122,28 +133,57 @@ server <- function(input, output, session) {
       )
     )
   })
-  ############### 
   
-  # Formation Viewer Tab Logic
   
-  # Update year choices
-  observe({
-    years <- sort(unique(data_all$season))
-    updateSelectInput(session, "year",
-                      choices = years)
-  })
+  # Original weekly_stats output:
+  # output$weekly_stats <- DT::renderDataTable({
+  #   req(input$player_position, input$player_team, input$player_name)
+  #   
+  #   player_stats <- position_data() %>%
+  #     filter(
+  #       player == input$player_name,
+  #       year >= input$year_range[1],
+  #       year <= input$year_range[2],
+  #       week >= input$week_range[1],
+  #       week <= input$week_range[2]
+  #     ) %>%
+  #     select_if(~!all(is.na(.)))
+  #   
+  #   DT::datatable(
+  #     player_stats,
+  #     options = list(
+  #       scrollX = TRUE,
+  #       pageLength = 10,
+  #       autoWidth = TRUE
+  #     )
+  #   )
+  # })
   
-  # Update week choices based on year
-  observe({
-    req(input$year)
-    weeks <- data_all %>%
-      filter(season == input$year) %>%
-      pull(week) %>%
-      unique() %>%
-      sort()
-    updateSelectInput(session, "week",
-                      choices = weeks)
-  })
+  # Original aggregated_stats output:
+  # output$aggregated_stats <- DT::renderDataTable({
+  #   req(input$player_position, input$player_team, input$player_name)
+  #   
+  #   player_stats <- position_data() %>%
+  #     filter(
+  #       player == input$player_name,
+  #       year >= input$year_range[1],
+  #       year <= input$year_range[2],
+  #       week >= input$week_range[1],
+  #       week <= input$week_range[2]
+  #     )
+  #   
+  #   agg_stats <- calculate_player_averages(player_stats)
+  #   
+  #   DT::datatable(
+  #     t(agg_stats),
+  #     colnames = rep("", ncol(t(agg_stats))), # This removes the V1 header
+  #     options = list(
+  #       scrollX = TRUE,
+  #       pageLength = 50,
+  #       autoWidth = TRUE
+  #     )
+  #   )
+  # })
   
   # Update game choices based on year and week
   observe({

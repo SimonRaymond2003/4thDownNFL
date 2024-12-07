@@ -63,11 +63,6 @@ ui <- navbarPage(
              style = "background-color: #f8f9fa; border-left: 5px solid #007bff; padding: 15px; margin: 15px 0; border-radius: 4px;",
              h4("Important Notice About Data Display", style = "color: #007bff; margin-top: 0;"),
              p("While I have personally created and engineered this dataset from PFF player reports for my research and analysis, I am currently awaiting confirmation regarding public display permissions. Until this is confirmed, numerical values will be displayed as '###' except for:"),
-             tags$ul(
-               tags$li("Player ID"),
-               tags$li("Year"),
-               tags$li("Week")
-             ),
              p("The complete dataset with all numerical values is available for my personal analytical use. This masking is temporary while permissions are finalized.")
            ),
            
@@ -286,6 +281,7 @@ ui <- navbarPage(
   ),
   
   # About tab 5
+  # About tab 5
   tabPanel("About",
            fluidPage(
              fluidRow(
@@ -293,37 +289,46 @@ ui <- navbarPage(
                       div(
                         style = "background-color: white; padding: 20px; border-radius: 5px; box-shadow: 0 2px 4px rgba(0,0,0,0.1); margin-top: 20px;",
                         h2("About the Developer", style = "border-bottom: 2px solid #f0f0f0; padding-bottom: 10px;"),
-                        p("My name is Simon Raymond. Im a fourth-year honours economics student at Saint Mary's University with a focus on econometrics, sports analytics and data science."),
+                        p("My name is Simon Raymond. I'm a fourth-year honours economics student at Saint Mary's University with a focus on econometrics, sports analytics and data science."),
                         
                         h3("Academic Experience", style = "margin-top: 20px;"),
+                        p("Currently working on my Honours Project: Predictive and Casual Analysis of 4th Down Attempts in the NFL"),
                         tags$ul(
-                          tags$li("Research Assistant working on projects relating to housing, crime and with the 2021 census"),
-                          tags$li("Teaching Assistant for Machine Learning, Econometrics and Human Resource Economics courses"),
-                          tags$li("Teaching labs for Machine Learning and Econometrics courses"),
-                          tags$li("Currently I am applying to graduate programs in economics. My goal to to finish a PHD and pursue a career as a assistant proffessor.")
-                        ),
+                          tags$li("GPA: 4.20/4.30"),
+                          tags$li("Research Focus: Combining traditional econometric methods with modern machine learning approaches to analyze 4th down decisions. This includes implementing both Heckman Selection models and predictive tools like XGBoost and Random Forest to provide a comprehensive analysis of fourth down attempts in the NFL"),                          tags$li("Implementing Heckman Correction for casual analysis on factors affecting 4th down results"),
+                          tags$li("Teaching Assistant for Machine Learning, Econometrics, and Human Resource Economics courses"),
+                          tags$li("Lab instructor for Machine Learning and Artificial Intelligence, teaching students advanced algorithms and concepts using both R and Python"),
+                          tags$li("Lab instructor for Econometrics, combining theoretical linear algebra foundations with practical computational applications in either R or Python"),                        ),
                         
-                        h3("Related Projects", style = "margin-top: 20px;"),
+                        h3("Research Assistant Projects", style = "margin-top: 20px;"),
                         div(
                           style = "display: flex; gap: 20px; margin-top: 15px;",
                           div(
                             style = "flex: 1; padding: 15px; border: 1px solid #ddd; border-radius: 5px;",
-                            h4("Project 1"),
-                            p("Description of first project"),
-                            tags$a(href = "[First App Link]", "Visit App", target = "_blank", 
+                            h4("Nova Scotia Neighborhood Housing App"),
+                            p("Interactive dashboard for analyzing Nova Scotia housing data"),
+                            tags$a(href = "https://dolphin-app-ixr9p.ondigitalocean.app/", "Visit App", target = "_blank", 
                                    style = "color: #2196F3; text-decoration: none;")
                           ),
                           div(
                             style = "flex: 1; padding: 15px; border: 1px solid #ddd; border-radius: 5px;",
-                            h4("Project 2"),
-                            p("Description of second project"),
-                            tags$a(href = "[Second App Link]", "Visit App", target = "_blank", 
+                            h4("Nova Scotia Crime Dashboard"),
+                            p("Interactive platform for analyzing crime statistics in Nova Scotia"),
+                            tags$a(href = "https://plankton-app-z95sf.ondigitalocean.app/", "Visit App", target = "_blank", 
                                    style = "color: #2196F3; text-decoration: none;")
                           )
+                        ),
+                        
+                        h3("Contact Information", style = "margin-top: 20px;"),
+                        tags$ul(
+                          tags$li(tags$b("Email: "), "simon.raymond@smu.ca"),
+                          tags$li(tags$b("Phone: "), "(902) 999-1499"),
+                          tags$li(tags$b("GitHub: "), tags$a(href = "https://github.com/SimonRaymond2003/4thDownNFL", "github.com/SimonRaymond2003/4thDownNFL", 
+                                                             target = "_blank", style = "color: #2196F3; text-decoration: none;"))
                         )
                       )
                )
              )
            )
-  ) # Close About tabPanel
+  )
 ) # Close navbarPage

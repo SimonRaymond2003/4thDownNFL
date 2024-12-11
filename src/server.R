@@ -73,16 +73,29 @@ server <- function(input, output, session) {
             summary$total_rows, summary$total_cols, summary$numeric_cols,
             summary$categorical_cols, summary$na_percentage)
   })
-  # Update the weekly_stats output
+  
+  # Update this section in your server.R
+  
   output$weekly_stats <- DT::renderDataTable({
-    # Validate required inputs
-    validate(
-      need(input$player_position != "", "Please select a position"),
-      need(input$player_team != "", "Please select a team"),
-      need(input$player_name != "", "Please select a player")
-    )
+    # Check position first
+    if (input$player_position == "") {
+      validate(need(input$player_position != "", "Please select a position"))
+      return()
+    }
     
-    # Original code continues here
+    # Only if position is selected, check team
+    if (input$player_team == "") {
+      validate(need(input$player_team != "", "Please select a team"))
+      return()
+    }
+    
+    # Only if team is selected, check player
+    if (input$player_name == "") {
+      validate(need(input$player_name != "", "Please select a player"))
+      return()
+    }
+    
+    # If all selections are made, show the data
     player_stats <- position_data() %>%
       filter(
         player == input$player_name,
@@ -109,16 +122,27 @@ server <- function(input, output, session) {
     )
   })
   
-  # Update the aggregated_stats output
+  # Same for aggregated_stats
   output$aggregated_stats <- DT::renderDataTable({
-    # Validate required inputs
-    validate(
-      need(input$player_position != "", "Please select a position"),
-      need(input$player_team != "", "Please select a team"),
-      need(input$player_name != "", "Please select a player")
-    )
+    # Check position first
+    if (input$player_position == "") {
+      validate(need(input$player_position != "", "Please select a position"))
+      return()
+    }
     
-    # Original code continues here
+    # Only if position is selected, check team
+    if (input$player_team == "") {
+      validate(need(input$player_team != "", "Please select a team"))
+      return()
+    }
+    
+    # Only if team is selected, check player
+    if (input$player_name == "") {
+      validate(need(input$player_name != "", "Please select a player"))
+      return()
+    }
+    
+    # If all selections are made, show the data
     player_stats <- position_data() %>%
       filter(
         player == input$player_name,

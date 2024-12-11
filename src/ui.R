@@ -327,7 +327,7 @@ ui <- navbarPage(
                         p("Currently working on my Honours Project: Predictive and Casual Analysis of 4th Down Attempts in the NFL"),
                         tags$ul(
                           tags$li("GPA: 4.20/4.30"),
-                          tags$li("Research Focus: Combining traditional econometric methods with modern machine learning approaches to analyze 4th down decisions. This includes implementing both Heckman Selection models and predictive tools like XGBoost and Random Forest to provide a comprehensive analysis of fourth down attempts in the NFL"),                          tags$li("Implementing Heckman Correction for casual analysis on factors affecting 4th down results"),
+                          tags$li("Research Focus: Combining traditional econometric methods with modern machine learning approaches to analyze 4th down decisions. This includes implementing both Heckman Selection models and predictive tools like XGBoost and Random Forest to provide a comprehensive analysis of fourth down attempts in the NFL"),                        
                           tags$li("Teaching Assistant for Machine Learning, Econometrics, and Human Resource Economics courses"),
                           tags$li("Lab instructor for Machine Learning and Artificial Intelligence, teaching students advanced algorithms and concepts using both R and Python"),
                           tags$li("Lab instructor for Econometrics, combining theoretical linear algebra foundations with practical computational applications in either R or Python"),                        ),

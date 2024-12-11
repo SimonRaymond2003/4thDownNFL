@@ -169,10 +169,16 @@ server <- function(input, output, session) {
             summary$total_rows, summary$total_cols, summary$numeric_cols,
             summary$categorical_cols, summary$na_percentage)
   })
-  
+  # Update the weekly_stats output
   output$weekly_stats <- DT::renderDataTable({
-    req(input$player_position, input$player_team, input$player_name)
+    # Validate required inputs
+    validate(
+      need(input$player_position != "", "Please select a position"),
+      need(input$player_team != "", "Please select a team"),
+      need(input$player_name != "", "Please select a player")
+    )
     
+    # Original code continues here
     player_stats <- position_data() %>%
       filter(
         player == input$player_name,
@@ -199,9 +205,16 @@ server <- function(input, output, session) {
     )
   })
   
+  # Update the aggregated_stats output
   output$aggregated_stats <- DT::renderDataTable({
-    req(input$player_position, input$player_team, input$player_name)
+    # Validate required inputs
+    validate(
+      need(input$player_position != "", "Please select a position"),
+      need(input$player_team != "", "Please select a team"),
+      need(input$player_name != "", "Please select a player")
+    )
     
+    # Original code continues here
     player_stats <- position_data() %>%
       filter(
         player == input$player_name,
@@ -224,7 +237,6 @@ server <- function(input, output, session) {
       )
     )
   })
-  
   
   # Original weekly_stats output:
   # output$weekly_stats <- DT::renderDataTable({

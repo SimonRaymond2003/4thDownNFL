@@ -4,7 +4,30 @@
 ui <- navbarPage(
   "NFL Analysis (2016-2023)",
   useShinyjs(),
+  
+  # Add CSS styling for navbar tabs
   tags$head(
+    tags$style(HTML("
+      /* Style for navbar tabs */
+      .navbar-nav > li > a {
+        font-weight: bold !important;
+        font-size: 16px !important;
+      }
+      
+      /* Make sure the active tab maintains the same style */
+      .navbar-nav > li.active > a {
+        font-weight: bold !important;
+        font-size: 16px !important;
+      }
+      
+      /* Style for the navbar brand/title */
+      .navbar-brand {
+        font-weight: bold !important;
+        font-size: 18px !important;
+      }
+    ")),
+    
+    # Your existing JavaScript
     tags$script("
       $(document).ready(function(){
         // Show info modal on tab load

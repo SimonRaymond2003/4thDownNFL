@@ -54,8 +54,7 @@ ui <- navbarPage(
              )
            )
   ),
-  # tab 2
-  
+
   # Tab 2: Player Statistics
   tabPanel("Player Statistics",
            # Data display notice
@@ -63,8 +62,7 @@ ui <- navbarPage(
              style = "background-color: #f8f9fa; border-left: 5px solid #007bff; padding: 15px; margin: 15px 0; border-radius: 4px;",
              h4("Important Notice About Data Display", style = "color: #007bff; margin-top: 0;"),
              p("While I have personally created and engineered this dataset from PFF player reports for my research and analysis, I am currently awaiting confirmation regarding public display permissions. Until this is confirmed, numerical values will be displayed as '###'"),
-             p("The complete dataset with all numerical values is available for my personal analytical use. This masking is temporary while permissions are finalized."),
-             p("Special Teams reports currectly are not used in the dataset creation. This makes the reports of punters and kickers scarce. This will be added in the near future. ")
+             p("The complete dataset with all numerical values is available for my personal analytical use. This masking is temporary while permissions are finalized.")
            ),
            
            # Information Modal
@@ -80,7 +78,7 @@ ui <- navbarPage(
                ),
                h3("About Player Statistics", style = "margin-top: 10px;"),
                p("This tab allows you to explore player statistics. This data has been engineered from PFF player reports.
-               You can view both individual week performance and aggregated statistics over selected time periods."),
+             You can view both individual week performance and aggregated statistics over selected time periods."),
                h4("Features:"),
                tags$ul(
                  tags$li("Select specific weeks and years to analyze player performance"),
@@ -88,7 +86,9 @@ ui <- navbarPage(
                  tags$li("See aggregated statistics over custom time periods"),
                  tags$li("Calculate averages excluding NA values"),
                  tags$li("Filter by position, team, and player")
-               )
+               ),
+               h4("Note:"),
+               p("Special Teams reports currently are not used in the dataset creation. This makes the reports of punters and kickers scarce. This will be added in the near future.")
              )
            ),
            

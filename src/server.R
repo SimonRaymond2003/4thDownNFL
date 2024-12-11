@@ -290,12 +290,11 @@ server <- function(input, output, session) {
   output$play_details <- renderText({
     req(selected_play())
     play <- selected_play()
-    sprintf("Season: %d\nQuarter: %d\nTime: %d:%02d\nYard line: %d\nTo go: %d\nFormation: %s\nDefense: %s",
+    sprintf("Season: %d\nQuarter: %d\nTime: %d:%02d\nYards to Convert: %d\nFormation: %s\nDefense: %s",
             play$season,
             play$qtr,
             floor(play$game_seconds_remaining/60),
             play$game_seconds_remaining %% 60,
-            play$yardline_100,
             play$ydstogo,
             play$offense_formation,
             play$defense_personnel)

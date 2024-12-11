@@ -75,24 +75,21 @@ server <- function(input, output, session) {
   })
   
   # Update this section in your server.R
-  
+  # Then update your server validation code
   output$weekly_stats <- DT::renderDataTable({
     # Check position first
     if (input$player_position == "") {
-      validate(need(input$player_position != "", "Please select a position"))
-      return()
+      validate("Please select a position")
     }
     
     # Only if position is selected, check team
     if (input$player_team == "") {
-      validate(need(input$player_team != "", "Please select a team"))
-      return()
+      validate("Please select a team")
     }
     
     # Only if team is selected, check player
     if (input$player_name == "") {
-      validate(need(input$player_name != "", "Please select a player"))
-      return()
+      validate("Please select a player")
     }
     
     # If all selections are made, show the data
@@ -122,24 +119,21 @@ server <- function(input, output, session) {
     )
   })
   
-  # Same for aggregated_stats
+  # Do the same for aggregated_stats
   output$aggregated_stats <- DT::renderDataTable({
     # Check position first
     if (input$player_position == "") {
-      validate(need(input$player_position != "", "Please select a position"))
-      return()
+      validate("Please select a position")
     }
     
     # Only if position is selected, check team
     if (input$player_team == "") {
-      validate(need(input$player_team != "", "Please select a team"))
-      return()
+      validate("Please select a team")
     }
     
     # Only if team is selected, check player
     if (input$player_name == "") {
-      validate(need(input$player_name != "", "Please select a player"))
-      return()
+      validate("Please select a player")
     }
     
     # If all selections are made, show the data

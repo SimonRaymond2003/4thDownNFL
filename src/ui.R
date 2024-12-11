@@ -1,11 +1,9 @@
 # ui.R
-
-# Define UI
 ui <- navbarPage(
   "NFL Analysis (2016-2023)",
   useShinyjs(),
   
-  # Add CSS styling for navbar tabs
+  # Add CSS styling
   tags$head(
     tags$style(HTML("
       /* Style for navbar tabs */
@@ -25,22 +23,32 @@ ui <- navbarPage(
         font-weight: bold !important;
         font-size: 18px !important;
       }
+      
+      /* Style for validation messages */
+      .shiny-output-error {
+        text-align: center !important;
+        padding: 50px !important;
+        font-weight: bold !important;
+        font-size: 24px !important;
+        color: #ff0000 !important;
+        background: none !important;
+      }
+      .shiny-output-error:before {
+        content: '' !important;
+      }
     ")),
     
-    # Your existing JavaScript
+    # Modal JavaScript
     tags$script("
       $(document).ready(function(){
-        // Show info modal on tab load
         $('a[data-value=\"Player Statistics\"]').on('shown.bs.tab', function(){
           $('#info_modal').show();
         });
         
-        // Close modal when clicking X
         $(document).on('click', '#close_modal', function(){
           $('#info_modal').hide();
         });
         
-        // Close modal when clicking outside
         $(window).click(function(event) {
           if ($(event.target).is('#info_modal')) {
             $('#info_modal').hide();

@@ -17,103 +17,7 @@ server <- function(input, output, session) {
                       selected = min(weeks))
   })
   
-  observe({
-    req(input$year, input$week)
-    games_data <- data_all %>%
-      filter(season == input$year,
-             week == input$week) %>%
-      select(game_id, home_team, away_team) %>%
-      distinct() %>%
-      mutate(
-        game_label = sprintf("%s @ %s", away_team, home_team),
-        game_id = as.character(game_id)
-      )
-    
-    updateSelectInput(session, "game",
-                      choices = setNames(games_data$game_id, games_data$game_label))
-  })
   
-  observe({
-    req(input$game)
-    plays <- data_all %>%
-      filter(game_id == input$game) %>%
-      mutate(play_desc = sprintf("Q%d - %d:%02d - %s - %d to go",
-                                 qtr,
-                                 floor(game_seconds_remaining/60),
-                                 game_seconds_remaining %% 60,
-                                 offense_formation,
-                                 ydstogo))
-    
-    updateSelectInput(session, "play",
-                      choices = setNames(1:nrow(plays), plays$play_desc))
-  })
-  
-  selected_play <- reactive({
-    req(input$play, input$game)
-    data_all %>%
-      filter(game_id == input$game) %>%
-      slice(as.numeric(input$play))
-  })
-  
-  output$formation_plot <- renderPlot({
-    req(selected_play())
-    tryCatch({
-      plot_formation(selected_play())
-    }, error = function(e) {
-      plot(0:1, 0:1, type = "n", axes = FALSE, xlab = "", ylab = "")
-      text(0.5, 0.5, "Error creating formation plot\nPlease check data and selections", 
-           cex = 1.5, col = "red", adj = 0.5)
-    })
-  })
-  
-  output$play_desc <- renderUI({
-    req(selected_play())
-    play <- selected_play()
-    HTML(sprintf("<div style='background-color: #f8f9fa; padding: 10px; margin: 10px 0;'>
-                   <strong>Play Description:</strong> %s
-                 </div>", 
-                 play$desc))
-  })
-  
-  output$play_details <- renderText({
-    req(selected_play())
-    play <- selected_play()
-    sprintf("Season: %d\nQuarter: %d\nTime: %d:%02d\nYard line: %d\nTo go: %d\nFormation: %s\nDefense: %s",
-            play$season,
-            play$qtr,
-            floor(play$game_seconds_remaining/60),
-            play$game_seconds_remaining %% 60,
-            play$yardline_100,
-            play$ydstogo,
-            play$offense_formation,
-            play$defense_personnel)
-  })
-  
-  output$offense_table <- DT::renderDataTable({
-    req(selected_play())
-    DT::datatable(
-      create_player_table(selected_play(), "offense"),
-      options = list(
-        pageLength = 11,
-        dom = 't',
-        ordering = FALSE
-      ),
-      rownames = FALSE
-    )
-  })
-  
-  output$defense_table <- DT::renderDataTable({
-    req(selected_play())
-    DT::datatable(
-      create_player_table(selected_play(), "defense"),
-      options = list(
-        pageLength = 11,
-        dom = 't',
-        ordering = FALSE
-      ),
-      rownames = FALSE
-    )
-  })
   
   # Player Statistics Tab Logic
   position_data <- reactive({
@@ -606,7 +510,7 @@ server <- function(input, output, session) {
       Go For It: %d (%.1f%%)\n
       Punts: %d (%.1f%%)\n
       Field Goals: %d (%.1f%%)\n
-      Success Rate on Attempts: %.1f%%\n
+      Conversion %% on 4th Down: %.1f%%\n
       Average Distance to Go: %.1f yards",
       length(input$selected_teams_decisions),
       summary_stats$total_plays,
